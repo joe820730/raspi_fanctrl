@@ -1,15 +1,20 @@
-OBJECTS = fanctrl.o readCpuTemp.o
-OBJ    := $(foreach obj, $(OBJECTS), $(obj))
+OBJECTS = fanctrl.o readCpuTemp.o readcfg.o
+OBJ := $(foreach obj, $(OBJECTS), $(obj))
 
 TARGET := fanctrl.exe
-FLAGS  := -pthread -Wall -g -O3
+FLAGS  := -pthread -Wall -g -O3 -DDEBUG
 LIBS   := -lwiringPi -lm
-CC      = gcc
+CC = gcc
+
+vpath %.c ./
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $(OBJ) $(FLAGS) $(LIBS)
+
+%.o: %.c
+	$(CC) -o $@ -c $^ $(FLAGS)
 
 clean:
 	rm -f *.o *.exe
