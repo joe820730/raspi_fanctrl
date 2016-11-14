@@ -21,11 +21,33 @@ int main()
     printf("Fan initial fail, exit.\n");
     return -1;
   }
-//  digitalWrite(FAN_PIN, LOW);
+  digitalWrite(FAN_PIN, LOW);
   while(1)
   {
     readtmp = readCpuTemp(&cpuTemp);
-    printf("CPUTEMP: %lf  Input fan speed (0-%d): ",cpuTemp,SPEED_MAX);
+    if (cpuTemp > 45 && readtmp <= 55)
+    {
+      softPwmWrite(FAN_PIN,30);
+    }
+    else if (cpuTemp > 55 && readtmp <= 65)
+    {
+      softPwmWrite(FAN_PIN,60);
+    }
+    else if (cpuTemp > 65 && readtmp <= 75)
+    {
+      softPwmWrite(FAN_PIN,80);
+    }
+    else if (cpuTemp > 75)
+    {
+      softPwmWrite(FAN_PIN,100);
+    }
+    else
+    {
+      digitalWrite(FAN_PIN,LOW);
+    }
+    printf("CPUTEMP = %.3lf",cpuTemp);
+    usleep(1000000);
+    /*printf("CPUTEMP: %lf  Input fan speed (0-%d): ",cpuTemp,SPEED_MAX);
     scanf("%d",&speed);
     if(speed > SPEED_MAX)
     {
@@ -34,7 +56,7 @@ int main()
     else
     {
       softPwmWrite(FAN_PIN,speed);
-    }
+    }*/
   }
   return 0;
 }
