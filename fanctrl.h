@@ -11,9 +11,4 @@ typedef struct {
   int speed2;
   int speed3;
   int speed_max;
-} fanconfig;
-
-#ifndef _READCFG_H_INCLUDED_
-#define _READCFG_H_INCLUDED_
-extern int readCfgFile(fanconfig *fancfg);
-#endif
+} FANConfig;

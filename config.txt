@@ -1,0 +1,4 @@
+PIN= 27
+DisableTemp= 50
+Temp= 53, 57, 61, 65
+Speed= 50, 65, 80, 100

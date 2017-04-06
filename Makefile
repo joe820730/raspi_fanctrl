@@ -1,5 +1,6 @@
+DIR = obj
 OBJECTS = fanctrl.o readCpuTemp.o readcfg.o
-OBJ := $(foreach obj, $(OBJECTS), $(obj))
+OBJ := $(foreach obj, $(OBJECTS), $(DIR)/$(obj))
 
 TARGET := fanctrl.exe
 FLAGS  := -pthread -Wall -g -O3 -DDEBUG
@@ -8,15 +9,18 @@ CC = gcc
 
 vpath %.c ./
 
-all: $(TARGET)
+all: create_folder $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $(OBJ) $(FLAGS) $(LIBS)
 
-%.o: %.c
+$(DIR)/%.o: %.c
 	$(CC) -o $@ -c $^ $(FLAGS)
 
-clean:
-	rm -f *.o *.exe
+create_folder:
+	mkdir -p $(DIR)
 
-.PHONY: all clean
+clean:
+	rm -f $(DIR)/*.o *.exe
+
+.PHONY: all clean create_folder

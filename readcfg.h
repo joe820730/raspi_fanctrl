@@ -1,4 +1,4 @@
 #ifndef _READCFG_H_INCLUDED_
 #define _READCFG_H_INCLUDED_
-extern int readCfgFile(struct fanconfig *fancfg);
+extern void readCfgFile(FANConfig *fancfg, const char* CFGFILE);
 #endif
