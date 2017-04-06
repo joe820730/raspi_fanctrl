@@ -7,7 +7,7 @@
 #include "readcfg.h"
 const char *CFGFILE = "./config.txt";
 
-int main()
+int main(int argc, char **argv)
 {
   FANConfig fancfg;
   double cpuTemp;
@@ -26,7 +26,25 @@ int main()
     printf("Fan initial fail, exit.\n");
     return -1;
   }
-  //digitalWrite(FAN_PIN, LOW);
+  if(argc == 2)
+  {
+    int speed = 0;
+    printf("Speed test mode\n");
+    while(1){
+      readtmp = readCpuTemp(&cpuTemp);
+      printf("CPUTEMP: %lf  Input fan speed (0-%d): ",cpuTemp,SPEED_MAX);
+      scanf("%d",&speed);
+      if(speed > SPEED_MAX)
+      {
+        softPwmWrite(fancfg.fan_pin,0);
+        return 0;
+      }
+      else
+      {
+        softPwmWrite(fancfg.fan_pin,speed);
+      }
+    }
+  }
   while(1)
   {
     readtmp = readCpuTemp(&cpuTemp);
@@ -54,16 +72,6 @@ int main()
     printf("CPUTEMP = %.3lf\n",cpuTemp);
 #endif
     usleep(2000000);
-    /*printf("CPUTEMP: %lf  Input fan speed (0-%d): ",cpuTemp,SPEED_MAX);
-    scanf("%d",&speed);
-    if(speed > SPEED_MAX)
-    {
-      break;
-    }
-    else
-    {
-      softPwmWrite(FAN_PIN,speed);
-    }*/
   }
   return 0;
 }

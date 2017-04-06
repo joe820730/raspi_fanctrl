@@ -3,7 +3,7 @@ OBJECTS = fanctrl.o readCpuTemp.o readcfg.o
 OBJ := $(foreach obj, $(OBJECTS), $(DIR)/$(obj))
 
 TARGET := fanctrl.exe
-FLAGS  := -pthread -Wall -g -O3 -DDEBUG
+FLAGS  := -pthread -Wall -g -O3 #-DDEBUG
 LIBS   := -lwiringPi -lm
 CC = gcc
 
