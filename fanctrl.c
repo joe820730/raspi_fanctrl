@@ -1,14 +1,24 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <unistd.h>
+#include <signal.h>
 #include "readCpuTemp.h"
 #include "fanctrl.h"
 #include "readcfg.h"
 const char *CFGFILE = "./config.txt";
+bool isHalt = false;
+
+void sigHandle(int signal)
+{
+  isHalt = true;
+  printf("Program exit.\n");
+}
 
 int main(int argc, char **argv)
 {
+  signal(SIGINT,sigHandle);
   FANConfig fancfg;
   double cpuTemp;
   int readtmp;
@@ -37,6 +47,7 @@ int main(int argc, char **argv)
       if(speed > SPEED_MAX)
       {
         softPwmWrite(fancfg.fan_pin,0);
+        softPwmStop(fancfg.fan_pin);
         return 0;
       }
       else
@@ -45,7 +56,8 @@ int main(int argc, char **argv)
       }
     }
   }
-  while(1)
+
+  while(!isHalt)
   {
     readtmp = readCpuTemp(&cpuTemp);
     if (cpuTemp > fancfg.temp0 && readtmp <= fancfg.temp1)
@@ -73,5 +85,6 @@ int main(int argc, char **argv)
 #endif
     usleep(2000000);
   }
+  softPwmStop(fancfg.fan_pin);
   return 0;
 }
