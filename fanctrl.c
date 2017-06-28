@@ -67,38 +67,39 @@ int main(int argc, char **argv)
         }
       }
     }
-    else
+  }
+  else
+  {
+    while(!isHalt)
     {
-      while(!isHalt)
+      readtmp = readCpuTemp(&cpuTemp);
+      if (cpuTemp > fancfg.temp0 && readtmp <= fancfg.temp1)
       {
-        readtmp = readCpuTemp(&cpuTemp);
-        if (cpuTemp > fancfg.temp0 && readtmp <= fancfg.temp1)
-        {
-          softPwmWrite(fancfg.fan_pin,fancfg.speed1);
-        }
-        else if (cpuTemp > fancfg.temp1 && readtmp <= fancfg.temp2)
-        {
-          softPwmWrite(fancfg.fan_pin,fancfg.speed2);
-        }
-        else if (cpuTemp > fancfg.temp2 && readtmp <= fancfg.temp3)
-        {
-          softPwmWrite(fancfg.fan_pin,fancfg.speed3);
-        }
-        else if (cpuTemp > fancfg.temp3)
-        {
-          softPwmWrite(fancfg.fan_pin,fancfg.speed_max);
-        }
-        else if (cpuTemp < fancfg.disableTemp)
-        {
-          softPwmWrite(fancfg.fan_pin,0);
-        }
-#ifdef DEBUG
-        printf("CPUTEMP = %.3lf\n",cpuTemp);
-#endif
-        usleep(2000000);
+        softPwmWrite(fancfg.fan_pin,fancfg.speed1);
       }
+      else if (cpuTemp > fancfg.temp1 && readtmp <= fancfg.temp2)
+      {
+        softPwmWrite(fancfg.fan_pin,fancfg.speed2);
+      }
+      else if (cpuTemp > fancfg.temp2 && readtmp <= fancfg.temp3)
+      {
+        softPwmWrite(fancfg.fan_pin,fancfg.speed3);
+      }
+      else if (cpuTemp > fancfg.temp3)
+      {
+        softPwmWrite(fancfg.fan_pin,fancfg.speed_max);
+      }
+      else if (cpuTemp < fancfg.disableTemp)
+      {
+        softPwmWrite(fancfg.fan_pin,0);
+      }
+#ifdef DEBUG
+      printf("CPUTEMP = %.3lf\n",cpuTemp);
+#endif
+      usleep(2000000);
     }
   }
+
   softPwmStop(fancfg.fan_pin);
   return 0;
 }
