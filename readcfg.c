@@ -14,7 +14,7 @@ void readCfgFile(FANConfig *fancfg, const char *CFGFILE)
   }
   else
   {
-    printf("Cannot open config.txt, use default setting.\n");
+    printf("Cannot open %s, use default setting.\n", CFGFILE);
     fancfg->fan_pin = 27;
     fancfg->disableTemp = 50;
     fancfg->temp0 = 53;
