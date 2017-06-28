@@ -1,4 +1,4 @@
 PIN= 27
-DisableTemp= 48
-Temp= 53, 57, 61, 65
-Speed= 40, 60, 80, 100
+DisableTemp= 44
+Temp= 48, 53, 58, 63
+Speed= 50, 65, 80, 100
