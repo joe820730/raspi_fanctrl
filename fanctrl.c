@@ -8,6 +8,7 @@
 #include "readCpuTemp.h"
 #include "fanctrl.h"
 #include "readcfg.h"
+#define CONFIG_FILE "config.ini"
 bool isHalt = false;
 
 void sigHandle(int signal)
@@ -23,15 +24,8 @@ int main(int argc, char **argv)
   double cpuTemp;
   int readtmp;
   int ret;
-  if(argc >= 2)
-  {
-    readCfgFile(&fancfg, argv[1]);
-  }
-  else
-  {
-    printf("Usage: %s [configFile] [-t for test mode]\n", argv[0]);
-    return 0;
-  }
+  readCfgFile(&fancfg, CONFIG_FILE);
+  printf("Usage: %s [-t for test mode]\n", argv[0]);
 #ifdef DEBUG
   printf("CFG: pin=%d, disableTemp=%d, t0=%d, t1=%d, t2=%d, t3=%d\nspeed1=%d, speed2=%d, speed3=%d, speed_max=%d\n",fancfg.fan_pin,fancfg.disableTemp,fancfg.temp0,fancfg.temp1,fancfg.temp2,fancfg.temp3,fancfg.speed1,fancfg.speed2,fancfg.speed3,fancfg.speed_max);
 #endif
