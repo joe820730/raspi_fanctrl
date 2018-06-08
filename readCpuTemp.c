@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int readCpuTemp(double *cpuTemp)
+int ReadCpuTemp(double *cpuTemp)
 {
   int fd;
   char cpuTempStr[8];

@@ -21,13 +21,18 @@ int main(int argc, char **argv)
 {
   signal(SIGINT,sigHandle);
   FANConfig fancfg;
+  memset(&fancfg, 0, sizeof(fancfg));
   double cpuTemp;
   int readtmp;
   int ret;
-  readCfgFile(&fancfg, CONFIG_FILE);
+  if(ReadCfgFile(&fancfg, CONFIG_FILE) == -1)
+  {
+    printf("Config file error, exit!\n");
+    return -1;
+  }
   printf("Usage: %s [-t for test mode]\n", argv[0]);
 #ifdef DEBUG
-  printf("CFG: pin=%d, disableTemp=%d, t0=%d, t1=%d, t2=%d, t3=%d\nspeed1=%d, speed2=%d, speed3=%d, speed_max=%d\n",fancfg.fan_pin,fancfg.disableTemp,fancfg.temp0,fancfg.temp1,fancfg.temp2,fancfg.temp3,fancfg.speed1,fancfg.speed2,fancfg.speed3,fancfg.speed_max);
+  printf("cfg: pin=%d, disabletemp=%d, t0=%d, t1=%d, t2=%d, t3=%d\nspeed1=%d, speed2=%d, speed3=%d, speed_max=%d\n",fancfg.fan_pin,fancfg.disableTemp,fancfg.temp[0],fancfg.temp[1],fancfg.temp[2],fancfg.temp[3],fancfg.speed[0],fancfg.speed[1],fancfg.speed[2],fancfg.speed[3]);
 #endif
 
   wiringPiSetupGpio();
@@ -38,15 +43,15 @@ int main(int argc, char **argv)
     printf("Fan initial fail, exit.\n");
     return -1;
   }
-  if(argc == 3)
+  if(argc == 2)
   {
-    if(strcmp("-t", argv[2]) == 0)
+    if(strcmp("-t", argv[1]) == 0)
     {
       int speed = 0;
       printf("Speed test mode\n");
       while(!isHalt)
       {
-        readtmp = readCpuTemp(&cpuTemp);
+        readtmp = ReadCpuTemp(&cpuTemp);
         printf("CPUTEMP: %lf  Input fan speed (0-%d): ",cpuTemp,SPEED_MAX);
         scanf("%d",&speed);
         if(speed > SPEED_MAX || speed < 0)
@@ -66,22 +71,22 @@ int main(int argc, char **argv)
   {
     while(!isHalt)
     {
-      readtmp = readCpuTemp(&cpuTemp);
-      if (cpuTemp > fancfg.temp0 && readtmp <= fancfg.temp1)
+      readtmp = ReadCpuTemp(&cpuTemp);
+      if (cpuTemp > fancfg.temp[0] && readtmp <= fancfg.temp[1])
       {
-        softPwmWrite(fancfg.fan_pin,fancfg.speed1);
+        softPwmWrite(fancfg.fan_pin,fancfg.speed[0]);
       }
-      else if (cpuTemp > fancfg.temp1 && readtmp <= fancfg.temp2)
+      else if (cpuTemp > fancfg.temp[1] && readtmp <= fancfg.temp[2])
       {
-        softPwmWrite(fancfg.fan_pin,fancfg.speed2);
+        softPwmWrite(fancfg.fan_pin,fancfg.speed[1]);
       }
-      else if (cpuTemp > fancfg.temp2 && readtmp <= fancfg.temp3)
+      else if (cpuTemp > fancfg.temp[2] && readtmp <= fancfg.temp[3])
       {
-        softPwmWrite(fancfg.fan_pin,fancfg.speed3);
+        softPwmWrite(fancfg.fan_pin,fancfg.speed[2]);
       }
-      else if (cpuTemp > fancfg.temp3)
+      else if (cpuTemp > fancfg.temp[3])
       {
-        softPwmWrite(fancfg.fan_pin,fancfg.speed_max);
+        softPwmWrite(fancfg.fan_pin,fancfg.speed[3]);
       }
       else if (cpuTemp < fancfg.disableTemp)
       {
